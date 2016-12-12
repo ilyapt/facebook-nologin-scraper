@@ -2,7 +2,7 @@
   "name": "facebook-nologin-scraper",
   "version": "0.1.0",
   "description": "Parser for open facebook profiles which accessible through the web without login",
-  "main": "bin/facebook-nologin-scraper.js",
+  "main": "lib/facebook-nologin-scraper.js",
   "bin": {
     "facebook-nologin-scraper": "facebook-nologin-scraper.js"
   },
