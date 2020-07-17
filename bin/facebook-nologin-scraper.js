@@ -19,24 +19,32 @@ async function timeout(ms) {
         headless: true
     });
 
-  const page = await browser.newPage();
-  await page.setViewport({
-    width  : 1440,
-    height : 900
-  });
+    browser.on('disconnected', () => {
+        process.exit();
+    });
 
-  await page.goto(process.argv[2]).catch((e) => {
-    console.log('error', e);
-  });
+    const page = await browser.newPage();
+    await page.setViewport({
+        width: 1440,
+        height: 900
+    });
 
-  await page.waitFor('#content_container', {timeout : 15000})
-  // await page.waitForNavigation({timeout : 120000});
+    await page.goto(process.argv[2]).catch((e) => {
+        console.log('error', e);
+    });
+
+    try {
+        await page.waitFor('#content_container', {timeout: 15000})
+    } catch (error) {
+        process.exit();
+    }
+    // await page.waitForNavigation({timeout : 120000});
     await timeout(10000);
-  const body = await page.evaluate(() => new XMLSerializer().serializeToString(document));
-  // console.log(body);
-  console.log(JSON.stringify(scraper(body), null, 2));
+    const body = await page.evaluate(() => new XMLSerializer().serializeToString(document));
+    // console.log(body);
+    console.log(JSON.stringify(scraper(body), null, 2));
 
-  browser.close();
+    browser.close();
 
 })();
 
