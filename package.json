@@ -1,6 +1,6 @@
 {
-  "name": "facebook-nologin-scraper",
-  "version": "0.1.0",
+  "name": "@preciselab/facebook-nologin-scraper",
+  "version": "0.2.0",
   "description": "Parser for open facebook profiles which accessible through the web without login",
   "main": "lib/facebook-nologin-scraper.js",
   "bin": {
