@@ -1,5 +1,8 @@
 const exec = require('child_process').exec;
 
+jest.setTimeout(20000)
+
+
 it('Zuck Profile should be collected from command line', async () => {
     const runCommand = `node bin/facebook-nologin-scraper.js https://www.facebook.com/zuck`;
     const myShellScript = exec(runCommand);
@@ -17,4 +20,4 @@ it('Zuck Profile should be collected from command line', async () => {
             reject(error)
         });
     });
-})
+});
