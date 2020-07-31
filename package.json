@@ -7,7 +7,7 @@
     "facebook-nologin-scraper": "facebook-nologin-scraper.js"
   },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "jest"
   },
   "repository": {
     "type": "git",
@@ -27,5 +27,15 @@
     "html-entities": "~1.2.0",
     "cheerio": "~0.22.0",
     "request": "~2.79.0"
+  },
+  "devDependencies": {
+    "@types/jest": "^26.0.4",
+    "jest": "^26.1.0",
+    "ts-jest": "^26.1.2",
+    "typescript": "^3.9.7"
+  },
+  "jest": {
+    "preset": "ts-jest",
+    "testEnvironment": "node"
   }
 }
