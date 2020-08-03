@@ -1,5 +1,6 @@
 var cheerio = require('cheerio');
 var entities = require("html-entities").XmlEntities;
+import {getGenderFromName} from "./getGenderFromName";
 
 module.exports = function (body) {
   var $ = cheerio.load(body);
@@ -9,8 +10,12 @@ module.exports = function (body) {
   } else {
     const _contact = contact($('#pagelet_contact'));
     if (!_contact) return {error: $('title').text()};
+
+    const name = $('#fbProfileCover h1').text();
+
     return {
-      name: $('#fbProfileCover h1').text(),
+      name,
+      'name-based-gender': getGenderFromName(name),
       link: $('#fbProfileCover h1 a').attr('href'),
       avatar: $('#fbTimelineHeadline .profilePicThumb img').attr('src'),
       eduwork: eduwork($('#pagelet_eduwork')),
@@ -39,6 +44,13 @@ function eduwork(section) {
   });
 }
 
+interface EducationDetail {
+  url: string,
+  caption: string,
+  text?: string,
+  additional?: string[]
+};
+
 function eduwork_common(element) {
   return {
     section: element.attr('data-pnref'),
@@ -50,7 +62,7 @@ function eduwork_common(element) {
       var caption = link.parent().next('div');
       var _tmp = caption.next('div').text()
       var additional = _tmp ? [_tmp] : [];
-      var retval = {
+      var retval: EducationDetail = {
         url: link.attr('href'),
         caption: link.text()
       };
@@ -69,6 +81,12 @@ function eduwork_common(element) {
   };
 }
 
+interface HomeTown {
+  text: string,
+  url: string,
+  type?: string
+}
+
 function hometown(element) {
   return element.children('div').children('div[class]').toArray().map(function (item) {
     item = cheerio(item);
@@ -77,7 +95,7 @@ function hometown(element) {
       items: item.find('ul li').toArray().map(function (li) {
         li = cheerio(li);
         var link = cheerio(element.find('a').toArray()[0]);
-        var result = {text: link.text(), url: link.attr('href')};
+        var result: HomeTown = {text: link.text(), url: link.attr('href')};
         link.remove();
         result.type = li.text();
         return result;

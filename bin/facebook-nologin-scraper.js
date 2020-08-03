@@ -1,11 +1,11 @@
 #!/usr/bin/node
 
 var request = require('request');
-var scraper = require('../lib/facebook-nologin-scraper');
+var scraper = require('..');
 
 if(process.argv.length !== 3) {
-  console.log('Usage: node facebook-nologin-scraper.js <full_url_to_facebook_profile>');
-  console.log('Example: node facebook-nologin-scraper.js https://www.facebook.com/zuck');
+  console.log('Usage: node facebook-nologin-scraper.ts <full_url_to_facebook_profile>');
+  console.log('Example: node facebook-nologin-scraper.ts https://www.facebook.com/zuck');
   process.exit(1);
 }
 
