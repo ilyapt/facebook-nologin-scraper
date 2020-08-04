@@ -4,14 +4,14 @@
   "description": "Parser for open facebook profiles which accessible through the web without login",
   "main": "lib/facebook-nologin-scraper.ts",
   "bin": {
-    "facebook-nologin-scraper": "facebook-nologin-scraper.js"
+    "facebook-nologin-scraper": "facebook-nologin-scraper.ts"
   },
   "scripts": {
     "test": "jest"
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/ilyapt/facebook-nologin-scraper.git"
+    "url": "https://github.com/gustawdaniel/facebook-nologin-scraper.git"
   },
   "keywords": [
     "facebook",
