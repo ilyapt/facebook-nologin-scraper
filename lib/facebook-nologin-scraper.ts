@@ -1,9 +1,12 @@
+//@ts-ignore-file
+import {Post} from "../../backend/api/interfaces/Post";
+
 var cheerio = require('cheerio');
 var entities = require("html-entities").XmlEntities;
 import {getGenderFromName} from "./getGenderFromName";
-
-module.exports = function (body) {
-  var $ = cheerio.load(body);
+//@ts-ignore-start
+module.exports = function (body: string) {
+  const $ = cheerio.load(body);
   if (checkIsPublicPage($)) {
     // console.debug('that is organization page');
     return processPublicPage($);
@@ -27,14 +30,19 @@ module.exports = function (body) {
   }
 };
 
-function eduwork(section) {
+interface EduWork {
+  url: string,
+  text: string,
+}
+
+function eduwork(section:any) {
   var cls = section.find('div[data-pnref]').attr('class');
-  return section.find('.' + cls).toArray().map(function (element) {
+  return section.find('.' + cls).toArray().map(function (element:any) {
     element = cheerio(element);
     if (element.attr('data-pnref')) return eduwork_common(element);
     else return {
       caption: element.children('div').text(),
-      items: element.find('a').toArray().map(function (el) {
+      items: element.find('a').toArray().map(function (el:any): EduWork {
         return {
           text: cheerio(el).text(),
           url: cheerio(el).attr('href')
@@ -49,13 +57,13 @@ interface EducationDetail {
   caption: string,
   text?: string,
   additional?: string[]
-};
+}
 
-function eduwork_common(element) {
+function eduwork_common(element:any) {
   return {
     section: element.attr('data-pnref'),
     text: element.children('div').text(),
-    items: element.children('ul').children('li').toArray().map(function (item) {
+    items: element.children('ul').children('li').toArray().map(function (item:any) {
       item = cheerio(item);
       var data = item.find('a').next('div');  // find div after link with image
       var link = data.find('a');
@@ -72,7 +80,7 @@ function eduwork_common(element) {
         var delim = caption.find('[role="presentation"]').html();
         retval.text = delim ? text.split(entities.decode(delim)) : [text];
       }
-      item.find('li').toArray().forEach(function (li) {
+      item.find('li').toArray().forEach(function (li:any) {
         additional.push(cheerio(li).text());
       });
       if (additional.length) retval.additional = additional;
@@ -87,12 +95,12 @@ interface HomeTown {
   type?: string
 }
 
-function hometown(element) {
-  return element.children('div').children('div[class]').toArray().map(function (item) {
+function hometown(element:any) {
+  return element.children('div').children('div[class]').toArray().map(function (item:any) {
     item = cheerio(item);
     return {
       caption: item.children('div').text(),
-      items: item.find('ul li').toArray().map(function (li) {
+      items: item.find('ul li').toArray().map(function (li:any) {
         li = cheerio(li);
         var link = cheerio(element.find('a').toArray()[0]);
         var result: HomeTown = {text: link.text(), url: link.attr('href')};
@@ -104,7 +112,7 @@ function hometown(element) {
   });
 }
 
-function bio(element) {
+function bio(element:any) {
   var caption = element.children('div').children('div').children('span');
   var main = element.find('ul');
   return (caption && main && main.html()) ? {
@@ -113,16 +121,16 @@ function bio(element) {
   } : null;
 }
 
-function contact(element) {
+function contact(element:any) {
   element = element.html();
   if (!element) return false;
-  var section = element.match(/<span[^>]+class[^>]+>[^<]+</g).map(function (el) {
+  var section = element.match(/<span[^>]+class[^>]+>[^<]+</g).map(function (el:any) {
     return el.match(/<span[^>]*class="[^"]+"[^>]*>/)[0]
   });
-  return element.split(section[1]).slice(1).map(function (section) {
+  return element.split(section[1]).slice(1).map(function (section:any) {
     return {
       section: section.match(/^([^<]+)</)[1],
-      urls: cheerio(section).find('a').toArray().map(function (element) {
+      urls: cheerio(section).find('a').toArray().map(function (element:any) {
         element = cheerio(element);
         var url = element.attr('href');
         return {
@@ -131,15 +139,15 @@ function contact(element) {
         };
       })
     };
-  }).filter(function (section) {
+  }).filter(function (section:any) {
     return section.urls.length;
   });
 }
 
-function favorites(element) {
+function favorites(element: any) {
   var sections = element.find('tbody').toArray();
   var other = cheerio(sections.pop());
-  var retval = sections.map(function (section) {
+  var retval = sections.map(function (section:any) {
     section = cheerio(section);
     return {
       label: section.find('.label').text(),
@@ -149,20 +157,20 @@ function favorites(element) {
   });
   retval.push({
     label: other.find('.label').text(),
-    items: other.find('a').toArray().map(function (link) {
+    items: other.find('a').toArray().map(function (link:any) {
       link = cheerio(link);
       return {
         url: link.attr('href'),
         text: link.text()
       };
-    }).filter(function (link) {
+    }).filter(function (link:any) {
       return link.url !== '#'
     })
   });
   return retval;
 }
 
-function checkIsPublicPage(doc) {
+function checkIsPublicPage(doc:any) {
   let isPage = false;
   if (doc('#pagelet_group_').length > 0) {
     isPage = true;
@@ -179,13 +187,19 @@ function checkIsPublicPage(doc) {
   return isPage;
 }
 
-function processPublicPage($) {
+interface PostTimed {
+  content: string
+  time: string
+  link: string
+}
+
+function processPublicPage($:any) {
   // console.log('hidden elements : ', doc('div.hidden_elem').length);
   // console.debug(doc.html());
 
-  let posts = [];
+  let posts:PostTimed[] = [];
 
-  $('.userContentWrapper').map((o, post) => {
+  $('.userContentWrapper').map((o:any, post:any) => {
     post = cheerio(post, {decodeEntities: false});
     const postData = entities.decode(post.find('.userContent').html());
     let postTime = post.find('abbr.timestamp').data('utime');
@@ -207,10 +221,10 @@ function processPublicPage($) {
 
   const title = $('title');
 
-  const name = title.text().split('').filter(c => {
+  const name = title.text().split('').filter((c:string):boolean => {
     // remove LRE 0x202a character https://unicodemap.org/details/0x202A/index.html
     return c.charCodeAt(0) !== 8234
-  }).join('').replace(/\|.*$/, '').split('-').reverse().filter((e, i) => i > 0).reverse().join('-').trim();
+  }).join('').replace(/\|.*$/, '').split('-').reverse().filter((e:string, i:number):boolean => i > 0).reverse().join('-').trim();
 
   const link = $('title+*').attr('href').replace(/\?.*?$/, '');
 
@@ -220,3 +234,4 @@ function processPublicPage($) {
     posts
   };
 }
+//@ts-ignore-end
