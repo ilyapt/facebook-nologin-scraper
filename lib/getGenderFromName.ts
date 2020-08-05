@@ -1,4 +1,4 @@
-enum Gender {
+export enum Gender {
     m = 'm',
     f = 'f',
     u = 'u' // Unknown
