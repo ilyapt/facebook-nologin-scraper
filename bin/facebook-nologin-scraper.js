@@ -16,7 +16,7 @@ async function timeout(ms) {
 
 (async () => {
     const browser = await puppeteer.launch({
-        headless: false
+        headless: true
     });
 
     browser.on('disconnected', () => {
