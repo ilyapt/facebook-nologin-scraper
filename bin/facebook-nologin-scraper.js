@@ -2,11 +2,18 @@
 
 var request = require('request');
 var scraper = require('../lib/facebook-nologin-scraper');
+const argv = require('yargs').argv;
 const puppeteer = require('puppeteer');
 
-if (process.argv.length !== 3) {
+const bloggerPage = argv.link
+const proxyHost = argv.proxyHost;
+const proxyPort = argv.proxyPort;
+const proxyUser = argv.proxyUser;
+const proxyPass = argv.proxyPass;
+
+if (!bloggerPage) {
     console.log('Usage: node facebook-nologin-scraper.js <full_url_to_facebook_profile>');
-    console.log('Example: node facebook-nologin-scraper.js https://www.facebook.com/zuck');
+    console.log('Example: node facebook-nologin-scraper.js --link=https://www.facebook.com/zuck');
     process.exit(1);
 }
 
@@ -15,8 +22,17 @@ async function timeout(ms) {
 }
 
 (async () => {
+
+    const browserArgs = [];
+    if(proxyHost && proxyPort){
+        browserArgs.push('--proxy-server=' + proxyHost + ':' + proxyPort);
+        browserArgs.push('--disable-session-crashed-bubble');
+        browserArgs.push('--disable-restore-session-state');
+    }
+
     const browser = await puppeteer.launch({
-        headless: true
+        headless: true,
+        args: browserArgs
     });
 
     browser.on('disconnected', () => {
@@ -29,7 +45,11 @@ async function timeout(ms) {
         height: 900
     });
 
-    await page.goto(process.argv[2]).catch((e) => {
+    if(proxyUser && proxyPass) {
+        await page.authenticate({username: proxyUser, password: proxyPass});
+    }
+
+    await page.goto(bloggerPage).catch((e) => {
         console.log('error', e);
     });
 
