@@ -16,7 +16,7 @@ async function timeout(ms) {
 
 (async () => {
     const browser = await puppeteer.launch({
-        headless: true
+        headless: false
     });
 
     browser.on('disconnected', () => {
@@ -35,6 +35,11 @@ async function timeout(ms) {
 
     try {
         await page.waitFor('#content_container', {timeout: 15000})
+        if(await page.$('div[data-key="tab_posts"]') !== null){
+            await page.click('div[data-key="tab_posts"]');
+            await page.waitForNavigation({timeout : 120000});
+            await page.waitFor('#content_container', {timeout: 15000})
+        }
     } catch (error) {
         process.exit();
     }
