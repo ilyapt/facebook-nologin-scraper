@@ -9,7 +9,7 @@ This well solution for mass scraping, I had experience to get facebook pages wit
 ### How to use as program
 _(for example scrape Mark Zuckerberg's profile)_
 
-``node bin/facebook-nologin-scraper.js https://www.facebook.com/zuck``
+``node bin/new-facebook-nologin-scraper.js https://www.facebook.com/zuck``
 
 
 ### How to use as node.js module
