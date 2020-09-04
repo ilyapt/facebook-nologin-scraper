@@ -1,3 +1,5 @@
+import {OrganizationProfile} from "../src/interfaces/OrganizationProfile";
+
 const fs = require('fs');
 import scraper from '../src/facebook-nologin-scraper';
 
@@ -12,9 +14,12 @@ it('Organization Profile should correctly parsed', async () => {
 });
 
 it('Michał Burtowy - Adwokat organization should be parsed', async () => {
-    const data = scraper(readPage('fb-log-adwokatburtowy'));
+    const data = scraper(readPage('fb-log-adwokatburtowy')) as OrganizationProfile;
     expect(data.name).toBe('Michał Burtowy - Adwokat');
     expect(data.link).toBe('https://facebook.com/adwokatburtowy/');
+    expect(data).toHaveProperty('posts');
+    expect(Array.isArray(data.posts));
+    expect(data.posts.length).toStrictEqual(2);
 });
 
 // this line fixed Cannot redeclare block-scoped variable 'fs'

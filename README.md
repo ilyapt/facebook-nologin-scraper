@@ -884,3 +884,17 @@ it('Proxy should be connected',async () => {
     expect(withProxy.city).not.toBe('THERE TYPE YOUR CITY');
 })
 ```
+
+# Config
+
+Flags:
+
+- DEBUG
+
+
+
+# Supported Node Versions
+
+We are supporting node: 10, 11, 12, 13 and 14.
+
+[History od changes](./CHANGELOG.md)
