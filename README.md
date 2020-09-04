@@ -828,3 +828,38 @@ request('https://www.facebook.com/zuck',
   ]
 }
 ```
+
+# Problem of proxying
+
+In 2020 there are some constrains in scraping from Facebook. Fortunately we can avoid them thanks to
+proxies.
+
+This libray do not take responsibility for proxy managing that can be elasticly adjusted to your requirements,
+but we provide example of code that shows how to integrate it with proxy.
+
+In our example we are using `axios` with `https-proxy-agent`.
+
+There is test assuming that function `getProxy` returns new single proxy in format `http://${ip}:${port}`:
+
+```
+
+```
+
+Below fragment of code for testing if your proxy hides your real location: 
+
+```
+import axios from 'axios';
+import HttpsProxyAgent from "https-proxy-agent/dist/agent";
+
+it('Proxy should be connected',async () => {
+    const {data: withoutProxy} = await axios('https://ipinfo.io');
+    expect(withoutProxy.city).toBe('THERE TYPE YOUR CITY');
+
+    const {data: withProxy} = await axios('https://ipinfo.io', {
+        proxy: false,
+        httpsAgent: new HttpsProxyAgent(getProxy())
+    });
+
+    expect(withProxy.city).not.toBe('THERE TYPE YOUR CITY');
+})
+```

@@ -11,7 +11,8 @@ interface PersonProfile {
   error?: any;
   name?: string;
   'name-based-gender'?: Gender;
-  link?: string; avatar?: string;
+  link: string;
+  avatar?: string;
   eduwork?: EduWork[];
   hometown?: HomeTownSummary[];
   bio?: Bio|null;
@@ -33,7 +34,7 @@ export default function (body: string):PersonProfile|OrganizationProfile {
     return processPublicPage($);
   } else {
     const _contact = contact($('#pagelet_contact'));
-    if (!_contact) return {error: $('title').text()};
+    // if (!_contact) throw new Error($('title').text());
 
     const name = $('#fbProfileCover h1').text();
 const cover:Cheerio = $('#fbProfileCover h1 a');
@@ -344,7 +345,8 @@ function processPublicPage($:any) {
   let posts:PostTimed[] = [];
 
   $('.userContentWrapper').map((o:any, post:any) => {
-    post = cheerio.load(post,  {decodeEntities: false});
+    // @ts-ignore
+    post = cheerio(post, {decodeEntities: false});
     const postData = entities.decode(post.find('.userContent').html());
     let postTime = post.find('abbr.timestamp').data('utime');
     let postLink = 'https://facebook.com' + post.find('abbr.timestamp').parent().attr('href');
