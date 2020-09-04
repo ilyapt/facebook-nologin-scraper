@@ -19,9 +19,7 @@ it('Michał Burtowy - Adwokat organization should be parsed', async () => {
     expect(data.link).toBe('https://facebook.com/adwokatburtowy/');
     expect(data).toHaveProperty('posts');
     expect(Array.isArray(data.posts));
-    console.log(data);
-
-    expect(data.posts.length).toBeGreaterThan(10);
+    expect(data.posts.length).toStrictEqual(2);
 });
 
 // this line fixed Cannot redeclare block-scoped variable 'fs'

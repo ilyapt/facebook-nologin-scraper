@@ -12,12 +12,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - support for organizations
 - rewritten to Typescript
 - distinguishing between private accounts and organizations
+- automated testing
+- normalization of links to remove trace from mobile vs www
+- documentation about usage with proxy
+- connection with Travis ci
 
 ### Changed
 - request replaced by axios
 
 ### Removed
-- support for Node js versions TODO: wchich
+- support for old Node js versions
 
 ## [0.1.0] - 2016-12-12 
 ### Added
