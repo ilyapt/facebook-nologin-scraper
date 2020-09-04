@@ -1,6 +1,3 @@
-//@ts-ignore-file
-import {Post} from "../../backend/api/interfaces/Post";
-
 import * as cheerio from 'cheerio';
 const entities = require("html-entities").XmlEntities;
 import {Gender, getGenderFromName} from "./getGenderFromName";
@@ -54,8 +51,6 @@ const cover:Cheerio = $('#fbProfileCover h1 a');
     };
   }
 };
-
-
 
 interface EduWork {
   url: string,

@@ -1,5 +1,5 @@
 const fs = require('fs');
-import scraper, {checkIsPublicPage} from '../lib/facebook-nologin-scraper';
+import scraper, {checkIsPublicPage} from '../src/facebook-nologin-scraper';
 const cheerio = require('cheerio');
 
 it('Zuck Profile should correctly parsed', async () => {

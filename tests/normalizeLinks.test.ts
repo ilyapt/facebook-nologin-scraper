@@ -1,4 +1,4 @@
-import {normalizeFbLink} from "../lib/normalizeLink";
+import {normalizeFbLink} from "../src/normalizeLink";
 
 it('Links from FB should be normalized for comparison', () => {
     const wwwLink = 'https://www.facebook.com/poznan.volkswagen/';

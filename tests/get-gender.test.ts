@@ -1,4 +1,4 @@
-import {getGenderFromName} from "../lib/getGenderFromName";
+import {getGenderFromName} from "../src/getGenderFromName";
 
 const testCases = [
     {name: 'Jessica Żebrowska', gender: 'f'},

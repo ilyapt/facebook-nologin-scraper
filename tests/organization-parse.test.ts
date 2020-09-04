@@ -1,5 +1,5 @@
 const fs = require('fs');
-import scraper from '../lib/facebook-nologin-scraper';
+import scraper from '../src/facebook-nologin-scraper';
 
 it('Organization Profile should correctly parsed', async () => {
     const page = fs.readFileSync(process.cwd() + '/tests/pages/fb-log-organization.html').toString();
