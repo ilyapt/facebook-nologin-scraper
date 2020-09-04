@@ -1,13 +1,14 @@
 {
   "name": "facebook-nologin-scraper",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "Parser for open facebook profiles which accessible through the web without login",
   "main": "lib/facebook-nologin-scraper.js",
   "bin": {
     "facebook-nologin-scraper": "facebook-nologin-scraper.js"
   },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "npx jest",
+    "build": "tsc"
   },
   "repository": {
     "type": "git",
@@ -24,8 +25,20 @@
     "url": "https://github.com/ilyapt/facebook-nologin-scraper/issues"
   },
   "dependencies": {
-    "html-entities": "~1.3.1",
+    "@types/cheerio": "^0.22.21",
+    "axios": "^0.20.0",
     "cheerio": "~0.22.0",
-    "request": "~2.88.2"
+    "html-entities": "~1.3.1"
+  },
+  "devDependencies": {
+    "@types/jest": "^26.0.13",
+    "@types/node": "^14.6.4",
+    "jest": "^26.4.2",
+    "ts-jest": "^26.3.0",
+    "typescript": "^4.0.2"
+  },
+  "jest": {
+    "preset": "ts-jest",
+    "testEnvironment": "node"
   }
 }

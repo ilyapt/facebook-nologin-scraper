@@ -1,5 +1,7 @@
 # facebook-nologin-scraper
 
+[![Build Status](https://travis-ci.com/ilyapt/facebook-nologin-scraper.svg?branch=master)](https://travis-ci.com/ilyapt/facebook-nologin-scraper)
+
 These are node.js module and program for scrape and parse basic profile info from open facebook profile without login or any api tokens. If you can see profile page in browser without entering on facebook then you can scrape this profile to JSON.
 
 This well solution for mass scraping, I had experience to get facebook pages with this module at a rate up to 100,000 profiles per hour via [200 private ipv6 proxies](https://proxy6.net/en/?r=355). Any scrapers based on the graph api would be banned from Facebook with such ratio.
@@ -17,7 +19,7 @@ _(for example scrape Mark Zuckerberg's profile)_
 and write simple script _(example also scrape profile of Mark Zuckerberg)_
 ```JavaScript
 var request = require('request');
-var scraper = require('facebook-nologin-scraper');
+var scraper = require('facebook-nologin-scraper').default;
 
 request('https://www.facebook.com/zuck',
   {
@@ -827,4 +829,58 @@ request('https://www.facebook.com/zuck',
     }
   ]
 }
+```
+
+# Problem of proxying
+
+In 2020 there are some constrains in scraping from Facebook. Fortunately we can avoid them thanks to
+proxies.
+
+This libray do not take responsibility for proxy managing that can be elasticly adjusted to your requirements,
+but we provide example of code that shows how to integrate it with proxy.
+
+In our example we are using `axios` with `https-proxy-agent`.
+
+There is test assuming function `getProxy` returns new single proxy in format `http://${ip}:${port}`:
+
+```
+const user = {
+    link: 'https://facebook.com/zuck'
+}
+
+const htmlFileName = (user: { link: string }): string => {
+    const index = post.link.endsWith('/') ? 1 : 0;
+    return process.cwd() + `/logs/fb-log-${post.link.split('/').reverse()[index]}.html`
+}
+
+const {data, status} = await axios(user.link, {
+    proxy: false,
+    httpsAgent: new HttpsProxyAgent(getProxy())
+})
+
+const filePath = htmlFileName(user);
+fs.writeFileSync(filePath, data);
+
+const profile = scraper(data);
+
+console.log(profile);
+```
+
+Below fragment of code for testing if your proxy hides your real location: 
+
+```
+import axios from 'axios';
+import HttpsProxyAgent from "https-proxy-agent/dist/agent";
+
+it('Proxy should be connected',async () => {
+    const {data: withoutProxy} = await axios('https://ipinfo.io');
+    expect(withoutProxy.city).toBe('THERE TYPE YOUR CITY');
+
+    const {data: withProxy} = await axios('https://ipinfo.io', {
+        proxy: false,
+        httpsAgent: new HttpsProxyAgent(getProxy())
+    });
+
+    expect(withProxy.city).not.toBe('THERE TYPE YOUR CITY');
+})
 ```
