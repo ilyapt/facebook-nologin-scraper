@@ -1,20 +1,26 @@
 import * as cheerio from 'cheerio';
-const entities = require("html-entities").XmlEntities;
+import * as entities from 'html-entities';
 
-import {normalizeFbLink} from "./facebook-nologin-scraper";
+import {normalizeFbLink} from './facebook-nologin-scraper';
+import {OrganizationProfile} from './interfaces/OrganizationProfile';
+import {PostTimed} from './interfaces/PostTimed';
 
-export const processPublicPage = ($: any) => {
-    let posts: PostTimed[] = [];
+const noLreCharacter = (c: string): boolean => {
+    // remove LRE 0x202a character https://unicodemap.org/details/0x202A/index.html
+    return c.charCodeAt(0) !== 8234;
+};
 
-    $('.userContentWrapper').map((o: any, post: any) => {
-        // @ts-ignore
-        post = cheerio(post, {decodeEntities: false});
-        const postData = entities.decode(post.find('.userContent').html());
-        let postTime = post.find('abbr.timestamp').data('utime');
-        let postLink = 'https://facebook.com' + post.find('abbr.timestamp').parent().attr('href');
+export const processPublicPage = ($: CheerioStatic): OrganizationProfile => {
+    const posts: PostTimed[] = [];
+
+    $('.userContentWrapper').map((o: number, post: CheerioElement) => {
+        const postElement = cheerio(post);
+        const postData = entities.XmlEntities.decode(postElement.find('.userContent').html() || '');
+        let postTime = postElement.find('abbr.timestamp').data('utime');
+        let postLink = 'https://facebook.com' + postElement.find('abbr.timestamp').parent().attr('href');
         if (!postTime) {
-            postTime = post.find('abbr[data-utime]').data('utime');
-            postLink = 'https://facebook.com' + post.find('abbr[data-utime]').parent().attr('href');
+            postTime = postElement.find('abbr[data-utime]').data('utime');
+            postLink = 'https://facebook.com' + postElement.find('abbr[data-utime]').parent().attr('href');
         }
 
         if (postData && postTime) {
@@ -29,16 +35,25 @@ export const processPublicPage = ($: any) => {
 
     const title = $('title');
 
-    const name = title.text().split('').filter((c: string): boolean => {
-        // remove LRE 0x202a character https://unicodemap.org/details/0x202A/index.html
-        return c.charCodeAt(0) !== 8234
-    }).join('').replace(/\|.*$/, '').split('-').reverse().filter((e: string, i: number): boolean => i > 0).reverse().join('-').trim();
+    const name = title
+        .text()
+        .split('')
+        .filter(noLreCharacter)
+        .join('')
+        .replace(/\|.*$/, '')
+        .split('-')
+        .reverse()
+        .filter((e: string, i: number): boolean => i > 0)
+        .reverse()
+        .join('-')
+        .trim();
 
-    const link = normalizeFbLink($('title+*').attr('href').replace(/\?.*?$/, ''));
+    const linkText = $('title+*').attr('href') || '';
+    const link = normalizeFbLink(linkText.replace(/\?.*?$/, ''));
 
     return {
         name,
         link,
         posts
     };
-}
+};

@@ -1,4 +1,4 @@
-import {HomeTown} from "./HomeTown";
+import {HomeTown} from './HomeTown';
 
 export interface HomeTownSummary {
     caption: string,

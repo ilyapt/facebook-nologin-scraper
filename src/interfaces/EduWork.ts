@@ -1,4 +1,7 @@
+import {EducationDetail} from './EducationDetail';
+
 export interface EduWork {
-    url: string,
+    section: string,
     text: string,
+    items: EducationDetail[]
 }

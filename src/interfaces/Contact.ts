@@ -1,4 +1,4 @@
-import {ContactUrl} from "./ContactUrl";
+import {ContactUrl} from './ContactUrl';
 
 export interface Contact {
     section: string

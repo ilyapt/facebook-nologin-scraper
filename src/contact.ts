@@ -1,32 +1,34 @@
-import {Contact} from "./interfaces/Contact";
+import {Contact} from './interfaces/Contact';
 import * as cheerio from 'cheerio';
 
-export const contact = (element: any): Contact[] | false => {
-    element = element.html();
+const sectionSelector = (section: string): string => {
+    const matching = section.match(/^([^<]+)</) || ['', ''];
+    return matching ? matching[1] : '';
+};
+
+export const contact = (element: Cheerio): Contact[] | false => {
+    const htmlElement = element.html() || '';
     if (!element) return false;
-    //@ts-ignore
-    const section = element.match(/<span[^>]+class[^>]+>[^<]+</g).map(function (el) {
-        return el.match(/<span[^>]*class="[^"]+"[^>]*>/)[0]
+
+    const elements = htmlElement.match(/<span[^>]+class[^>]+>[^<]+</g) || [];
+
+    const section = elements.map((el: string): string => {
+        const e = el.match(/<span[^>]*class="[^"]+"[^>]*>/) || [''];
+        return e.length ? e[0] : '';
     });
-    //@ts-ignore
-    return element.split(section[1]).slice(1).map(function (section) {
+
+    return htmlElement.split(section[1]).slice(1).map((section: string) => {
         return {
-            section: section.match(/^([^<]+)</)[1],
-            //@ts-ignore
-            urls: cheerio(section).find('a').toArray().map(function (element) {
-                //@ts-ignore
-                element = cheerio(element);
-                //@ts-ignore
-                const url = element.attr('href');
+            section: sectionSelector(section),
+            urls: cheerio(section).find('a').toArray().map((element: CheerioElement) => {
+                const processedElement = cheerio(element);
+                const url = processedElement.attr('href') || '';
+                const matching = url.match(/u=([^&]+)/) || ['', ''];
                 return {
-                    url: url.match(/facebook.com\/l\.php/) ? decodeURIComponent(url.match(/u=([^&]+)/)[1]) : url,
-                    //@ts-ignore
-                    text: element.text()
+                    url: url.match(/facebook.com\/l\.php/) ? decodeURIComponent(matching[1] || '') : url,
+                    text: processedElement.text() || ''
                 };
             })
         };
-        //@ts-ignore
-    }).filter(function (section) {
-        return section.urls.length;
-    });
-}
+    }).filter((section) => section.urls.length);
+};

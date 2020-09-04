@@ -21,7 +21,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - request replaced by axios
 
 ### Removed
-- support for old Node js versions
+- support for Node js version 10
 
 ## [0.1.0] - 2016-12-12 
 ### Added

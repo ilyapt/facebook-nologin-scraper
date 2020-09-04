@@ -1,25 +1,20 @@
-import {HomeTownSummary} from "./interfaces/HomeTownSummary";
+import {HomeTownSummary} from './interfaces/HomeTownSummary';
 import * as cheerio from 'cheerio';
 
-export const hometown = (element: any): HomeTownSummary[] => {
-    //@ts-ignore
-    return element.children('div').children('div[class]').toArray().map(function (item) {
-        //@ts-ignore
-        item = cheerio(item);
+export const hometown = (element: Cheerio): HomeTownSummary[] => {
+    return element.children('div').children('div[class]').toArray().map((item: CheerioElement): HomeTownSummary => {
+        const itemElement = cheerio(item);
         return {
-            caption: item.children('div').text(),
-            //@ts-ignore
-            items: item.find('ul li').toArray().map(function (li) {
-                //@ts-ignore
-                li = cheerio(li);
-                //@ts-ignore
-                const link = cheerio(element.find('a').toArray()[0]);
-                const result = {text: link.text(), url: link.attr('href')};
-                link.remove();
-                //@ts-ignore
-                result.type = li.text();
-                return result;
+            caption: itemElement.children('div').text(),
+            items: itemElement.find('ul li').toArray().map((li: CheerioElement) => {
+                const liElement = cheerio(li);
+                const link = cheerio(liElement.find('a').toArray()[0]);
+                return {
+                    text: link.text(),
+                    url: link.attr('href') || '',
+                    type: liElement.find('span + div').text() || ''
+                };
             })
         };
     });
-}
+};

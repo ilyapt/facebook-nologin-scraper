@@ -1,37 +1,29 @@
 import * as cheerio from 'cheerio';
+import {Favorite} from './interfaces/Favorite';
+import {OtherFavorites} from './interfaces/OtherFavorites';
 
-export const favorites = (element: Cheerio): any => {
+export const favorites = (element: Cheerio): (Favorite | OtherFavorites)[] => {
     const sections = element.find('tbody').toArray();
-    //@ts-ignore
     const other = cheerio(sections.pop());
-    const retval = sections.map(function (section) {
-        //@ts-ignore
-        section = cheerio(section);
-        return {
-            //@ts-ignore
-            label: section.find('.label').text(),
-            //@ts-ignore
-            url: section.find('.data a').attr('href'),
-            //@ts-ignore
-            text: section.find('.data a').text()
-        }
-    });
-    retval.push({
-        label: other.find('.label').text(),
-        //@ts-ignore
-        items: other.find('a').toArray().map(function (link) {
-            //@ts-ignore
-            link = cheerio(link);
+
+    return [
+        ...sections.map((section: CheerioElement): Favorite => {
+            const sectionElement = cheerio(section);
             return {
-                //@ts-ignore
-                url: link.attr('href'),
-                //@ts-ignore
-                text: link.text()
+                label: sectionElement.find('.label').text(),
+                url: sectionElement.find('.data a').attr('href') || '',
+                text: sectionElement.find('.data a').text()
             };
-            //@ts-ignore
-        }).filter(function (link) {
-            return link.url !== '#'
-        })
-    });
-    return retval;
-}
+        }),
+        ...[{
+            label: other.find('.label').text() || '',
+            items: other.find('a').toArray().map((link: CheerioElement) => {
+                const linkElement = cheerio(link);
+                return {
+                    url: linkElement.attr('href') || '',
+                    text: linkElement.text() || ''
+                };
+            }).filter((link) => link.url !== '#'),
+        }]
+    ];
+};

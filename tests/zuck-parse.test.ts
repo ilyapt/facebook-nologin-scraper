@@ -17,5 +17,6 @@ it('Zuck Profile should correctly parsed', async () => {
     expect(data.link).toBe('https://facebook.com/zuck');
     expect(Array.isArray(data.hometown)).toBeTruthy();
 
+    expect(JSON.stringify(data.hometown)).toBe(JSON.stringify(JSON.parse(zuckDataString).hometown));
     expect(JSON.stringify(data)).toBe(zuckDataString);
 });
