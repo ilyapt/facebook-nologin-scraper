@@ -1,5 +1,7 @@
 # facebook-nologin-scraper
 
+[![Build Status](https://travis-ci.com/ilyapt/facebook-nologin-scraper.svg?branch=master)](https://travis-ci.com/ilyapt/facebook-nologin-scraper)
+
 These are node.js module and program for scrape and parse basic profile info from open facebook profile without login or any api tokens. If you can see profile page in browser without entering on facebook then you can scrape this profile to JSON.
 
 This well solution for mass scraping, I had experience to get facebook pages with this module at a rate up to 100,000 profiles per hour via [200 private ipv6 proxies](https://proxy6.net/en/?r=355). Any scrapers based on the graph api would be banned from Facebook with such ratio.
@@ -839,10 +841,29 @@ but we provide example of code that shows how to integrate it with proxy.
 
 In our example we are using `axios` with `https-proxy-agent`.
 
-There is test assuming that function `getProxy` returns new single proxy in format `http://${ip}:${port}`:
+There is test assuming function `getProxy` returns new single proxy in format `http://${ip}:${port}`:
 
 ```
+const user = {
+    link: 'https://facebook.com/zuck'
+}
 
+const htmlFileName = (user: { link: string }): string => {
+    const index = post.link.endsWith('/') ? 1 : 0;
+    return process.cwd() + `/logs/fb-log-${post.link.split('/').reverse()[index]}.html`
+}
+
+const {data, status} = await axios(user.link, {
+    proxy: false,
+    httpsAgent: new HttpsProxyAgent(getProxy())
+})
+
+const filePath = htmlFileName(user);
+fs.writeFileSync(filePath, data);
+
+const profile = scraper(data);
+
+console.log(profile);
 ```
 
 Below fragment of code for testing if your proxy hides your real location: 

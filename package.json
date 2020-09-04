@@ -1,5 +1,5 @@
 {
-  "name": "@preciselab/facebook-nologin-scraper",
+  "name": "facebook-nologin-scraper",
   "version": "0.2.0",
   "description": "Parser for open facebook profiles which accessible through the web without login",
   "main": "lib/facebook-nologin-scraper.js",
@@ -12,7 +12,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/gustawdaniel/facebook-nologin-scraper.git"
+    "url": "https://github.com/ilyapt/facebook-nologin-scraper.git"
   },
   "keywords": [
     "facebook",
